@@ -52,6 +52,24 @@ def unique_storage_bytes(model: Xtts) -> int:
     return sum(storages.values())
 
 
+def cuda_tensor_bytes(*tensors) -> int:
+    """Sum unique storage bytes for tensors currently located on CUDA."""
+    storages = {}
+    for tensor in tensors:
+        if isinstance(tensor, torch.Tensor) and tensor.device.type == "cuda":
+            storages[tensor.untyped_storage().data_ptr()] = tensor.untyped_storage().nbytes()
+    return sum(storages.values())
+
+
+def clear_gpt_prefix_cache(model: Xtts) -> int:
+    """Remove the non-parameter GPT prefix cache so native offload can reclaim VRAM."""
+    gpt_inference = getattr(getattr(model, "gpt", None), "gpt_inference", None)
+    cached = getattr(gpt_inference, "cached_prefix_emb", None)
+    freed = cuda_tensor_bytes(cached)
+    gpt_inference.cached_prefix_emb = None
+    return freed
+
+
 def main() -> None:
     """Load one checkpoint and exercise only ComfyUI's native model residency API."""
     parser = argparse.ArgumentParser(description=__doc__)

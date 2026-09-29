@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import librosa
+import soundfile as sf
 import torch
 import torch.nn.functional as F
 import torchaudio
@@ -73,10 +74,9 @@ def wav_to_mel_cloning(
 
 
 def load_audio(audiopath, sampling_rate):
-    # better load setting following: https://github.com/faroit/python_audio_loading_benchmark
-
-    # torchaudio should chose proper backend to load audio depending on platform
-    audio, lsr = torchaudio.load(audiopath)
+    """Decode an audio reference as channel-first float32 without TorchCodec."""
+    samples, lsr = sf.read(audiopath, dtype="float32", always_2d=True)
+    audio = torch.from_numpy(samples.T.copy())
 
     # stereo to mono if needed
     if audio.size(0) != 1:
