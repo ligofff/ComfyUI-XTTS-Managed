@@ -56,16 +56,20 @@ num2words==0.5.14
 spacy==3.8.12
 ```
 
-Run the reproducible setup explicitly after installing the custom node:
+Install the custom node and its additional dependencies in the ComfyUI
+Python environment:
 
 ```bash
-bash /root/ComfyUI/custom_nodes/ComfyUI-XTTS-Managed/setup_runtime.sh
+cd /root/ComfyUI/custom_nodes
+# clone this repository as ComfyUI-XTTS-Managed
+python3 -m pip install --user -r ComfyUI-XTTS-Managed/requirements.txt
 ```
 
-The setup script verifies the base `torchaudio` first, installs only the
-missing pinned packages, refuses to replace a different already-installed
-version, and verifies imports afterward. It never installs or downgrades
-`torch` or `torchaudio`.
+The requirements file intentionally excludes `torch`, `torchaudio`,
+`transformers`, `tokenizers`, `numpy`, `scipy`, `einops`, `fsspec`,
+`safetensors` and other packages supplied by the base ComfyUI image. The
+vendored XTTS code still uses the base image's torch-matched `torchaudio` for
+MelSpectrogram and resampling; `soundfile` handles reference-audio loading.
 
 ## Node behavior
 
