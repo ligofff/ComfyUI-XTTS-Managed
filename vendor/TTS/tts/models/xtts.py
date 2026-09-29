@@ -260,6 +260,13 @@ class Xtts(BaseTTS):
     def device(self):
         return next(self.parameters()).device
 
+    @device.setter
+    def device(self, target):
+        """Validate ComfyUI ModelPatcher residency against actual XTTS parameters."""
+        actual = next(self.parameters()).device
+        if actual != torch.device(target):
+            raise RuntimeError(f"XTTS device mismatch: parameters on {actual}, requested {target}")
+
     @torch.inference_mode()
     def get_gpt_cond_latents(self, audio, sr, length: int = 30, chunk_length: int = 6):
         """Compute the conditioning latents for the GPT model from the given audio.
