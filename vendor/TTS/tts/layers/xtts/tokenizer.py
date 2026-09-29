@@ -6,12 +6,6 @@ from functools import cached_property
 
 import torch
 from num2words import num2words
-from spacy.lang.ar import Arabic
-from spacy.lang.en import English
-from spacy.lang.es import Spanish
-from spacy.lang.hi import Hindi
-from spacy.lang.ja import Japanese
-from spacy.lang.zh import Chinese
 from tokenizers import Tokenizer
 
 from TTS.tts.layers.xtts.zh_num2words import TextNorm as zh_num2words
@@ -22,17 +16,23 @@ logger = logging.getLogger(__name__)
 def get_spacy_lang(lang):
     """Return Spacy language used for sentence splitting."""
     if lang == "zh":
+        from spacy.lang.zh import Chinese
         return Chinese()
     elif lang == "ja":
+        from spacy.lang.ja import Japanese
         return Japanese()
     elif lang == "ar":
+        from spacy.lang.ar import Arabic
         return Arabic()
     elif lang == "es":
+        from spacy.lang.es import Spanish
         return Spanish()
     elif lang == "hi":
+        from spacy.lang.hi import Hindi
         return Hindi()
     else:
         # For most languages, English does the job
+        from spacy.lang.en import English
         return English()
 
 

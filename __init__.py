@@ -1,10 +1,11 @@
-"""Safe XTTS custom-node entrypoint; inference nodes await managed GPU integration."""
+"""ComfyUI entrypoint for the vendored, ComfyUI-managed XTTS nodes."""
 
 import sys
 from pathlib import Path
 
 _VENDOR = Path(__file__).resolve().parent / "vendor"
-sys.path.insert(0, str(_VENDOR))
+if str(_VENDOR) not in sys.path:
+    sys.path.insert(0, str(_VENDOR))
 
 import TTS
 
@@ -13,9 +14,6 @@ if Path(TTS.__file__).resolve() != _VENDOR / "TTS" / "__init__.py":
 if TTS.__version__ != "0.24.3":
     raise RuntimeError(f"Expected Coqui TTS 0.24.3, got {TTS.__version__}")
 
-from TTS.tts.configs.xtts_config import XttsConfig
-from TTS.tts.models.xtts import Xtts
+from .managed_nodes import NODE_CLASS_MAPPINGS, NODE_DISPLAY_NAME_MAPPINGS
 
-# No inference nodes are registered until ComfyUI-managed model loading exists.
-NODE_CLASS_MAPPINGS = {}
-NODE_DISPLAY_NAME_MAPPINGS = {}
+__all__ = ["NODE_CLASS_MAPPINGS", "NODE_DISPLAY_NAME_MAPPINGS"]

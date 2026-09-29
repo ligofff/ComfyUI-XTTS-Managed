@@ -1,0 +1,24 @@
+{
+  "1": {
+    "class_type": "XTTSManagedLoader",
+    "inputs": {
+      "model_path": "/root/ComfyUI/models/xtts/xttsv2_banana"
+    }
+  },
+  "2": {
+    "class_type": "XTTSManagedGenerate",
+    "inputs": {
+      "model": ["1", 0],
+      "text": "Привет, это проверка рабочей ComfyUI-ноды.",
+      "language": "ru",
+      "reference_audio": "/root/ComfyUI/models/xtts/voice_refs/female_03.wav"
+    }
+  },
+  "3": {
+    "class_type": "SaveAudio",
+    "inputs": {
+      "audio": ["2", 0],
+      "filename_prefix": "xtts_managed/banana_test"
+    }
+  }
+}

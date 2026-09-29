@@ -1,0 +1,21 @@
+{
+  "1": {"class_type": "LoadImage", "inputs": {"image": "qwen21_ref1.jpg"}},
+  "2": {"class_type": "LoadImage", "inputs": {"image": "qwen21_ref2.jpg"}},
+  "3": {"class_type": "UnetLoaderGGUF", "inputs": {"unet_name": "qwen-image-2.1-Q8_0.gguf"}},
+  "4": {"class_type": "CLIPLoaderGGUF", "inputs": {"clip_name": "Huihui-Qwen3-VL-8B-Instruct-abliterated.Q4_K_M.gguf", "type": "qwen_image"}},
+  "5": {"class_type": "VAELoader", "inputs": {"vae_name": "qwen_image_2.1_vae_bf16_comfyorg.safetensors"}},
+  "6": {
+    "class_type": "TextEncodeQwenImage21",
+    "inputs": {
+      "clip": ["4", 0],
+      "vae": ["5", 0],
+      "prompt": "Take the character and illustrated visual style from image 1. Place that same character into the pose and indoor environment shown in image 2. Preserve the identity and style. Keep natural anatomy and coherent hands.",
+      "negative_prompt": "different character, extra limbs, malformed hands, distorted face, text, watermark",
+      "resolution": 1024,
+      "images": [["1", 0], ["2", 0]]
+    }
+  },
+  "7": {"class_type": "KSampler", "inputs": {"model": ["3", 0], "seed": 20260929, "steps": 4, "cfg": 1.0, "sampler_name": "euler", "scheduler": "simple", "denoise": 0.45, "positive": ["6", 0], "negative": ["6", 1], "latent_image": ["6", 2]}},
+  "8": {"class_type": "VAEDecode", "inputs": {"samples": ["7", 0], "vae": ["5", 0]}},
+  "9": {"class_type": "SaveImage", "inputs": {"filename_prefix": "xtts_managed/integration_qwen_image", "images": ["8", 0]}}
+}

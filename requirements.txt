@@ -1,0 +1,9 @@
+# Exact XTTS 0.24.3 runtime packages absent from the base ComfyUI image.
+# torch, torchaudio, transformers, tokenizers, scipy, numpy, einops,
+# fsspec and safetensors are supplied by the ComfyUI image.
+coqpit==0.0.17
+coqui-tts-trainer==0.1.7
+librosa==0.11.0
+soundfile==0.13.1
+num2words==0.5.14
+spacy==3.8.12
